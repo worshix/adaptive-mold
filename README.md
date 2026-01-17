@@ -4,7 +4,7 @@ A PySide6 desktop application for loading STEP geometry files, visualizing 3D wi
 
 ## Features
 
-- **STEP File Loading**: Load STEP/STP CAD files and extract vertices/edges for visualization
+- **Precise STEP File Loading**: Uses pythonocc-core (OpenCASCADE) for engineering-grade B-Rep geometry precision
 - **3D Wireframe View**: Interactive 3D visualization with rotate/pan/zoom controls
 - **Path Planning**: Greedy nearest-neighbor and edge-sampling algorithms for waypoint sequencing
 - **Serial Communication**: Real serial (pyserial) and mock controller for demo/testing
@@ -13,8 +13,8 @@ A PySide6 desktop application for loading STEP geometry files, visualizing 3D wi
 
 ## Requirements
 
-- Python 3.13+
-- uv (Python package manager)
+- Python 3.11 (required for pythonocc-core compatibility)
+- Conda (Anaconda or Miniconda)
 
 ## Installation
 
@@ -24,9 +24,19 @@ git clone <repository-url>
 cd adaptive-mold
 ```
 
-2. Install dependencies using uv:
+2. Create the conda environment:
 ```bash
-uv sync
+conda env create -f environment.yml
+```
+
+3. Activate the environment:
+```bash
+conda activate eng
+```
+
+4. Install the project in development mode (optional):
+```bash
+pip install -e .
 ```
 
 ## Running the Application
@@ -34,11 +44,10 @@ uv sync
 ### Launch the GUI
 
 ```bash
-# Using uv
-uv run python -m adaptive_mold.app
+# Make sure the environment is activated
+conda activate eng
 
-# Or after activating the virtual environment
-source .venv/bin/activate
+# Run the application
 python -m adaptive_mold.app
 ```
 
@@ -47,7 +56,7 @@ python -m adaptive_mold.app
 For testing the serial protocol independently:
 
 ```bash
-uv run python -m adaptive_mold.resources.mock_controller
+python -m adaptive_mold.resources.mock_controller
 ```
 
 Then send JSON commands via stdin:

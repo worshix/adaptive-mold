@@ -1,0 +1,33 @@
+name: eng
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  # Python version compatible with pythonocc-core
+  - python=3.11
+  
+  # Core CAD/Geometry - pythonocc for precise STEP handling
+  - pythonocc-core>=7.7.0
+  
+  # Scientific computing
+  - numpy>=1.26.0
+  - scipy>=1.11.0
+  
+  # Database
+  - sqlalchemy>=2.0.0
+  
+  # Serial communication
+  - pyserial>=3.5
+  
+  # GUI - PySide6 from conda-forge
+  - pyside6>=6.6.0
+  
+  # Pip-only packages
+  - pip
+  - pip:
+    # Mesh handling (fallback, also useful for STL/OBJ)
+    - trimesh>=4.0.0
+    # Data validation
+    - pydantic>=2.5.0
+    # Logging
+    - loguru>=0.7.0

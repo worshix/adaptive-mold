@@ -21,17 +21,17 @@ try:
     from OCC.Core.IFSelect import IFSelect_RetDone
     from OCC.Core.TopExp import TopExp_Explorer
     from OCC.Core.TopAbs import TopAbs_EDGE, TopAbs_VERTEX
-    from OCC.Core.TopoDS import topods_Edge, topods_Vertex
+    from OCC.Core.TopoDS import topods
     from OCC.Core.BRep import BRep_Tool
     from OCC.Core.BRepAdaptor import BRepAdaptor_Curve
     from OCC.Core.GCPnts import GCPnts_UniformAbscissa
     from OCC.Core.Bnd import Bnd_Box
-    from OCC.Core.BRepBndLib import brepbndlib_Add
+    from OCC.Core.BRepBndLib import brepbndlib
     OCC_AVAILABLE = True
     logger.info("pythonocc-core (OCC) available - using precise B-Rep geometry")
-except ImportError:
+except ImportError as e:
     OCC_AVAILABLE = False
-    logger.warning("pythonocc-core not available, will try trimesh fallback")
+    logger.warning(f"pythonocc-core not available ({e}), will try trimesh fallback")
 
 # Try trimesh as fallback
 try:
@@ -172,7 +172,7 @@ def _load_step_with_occ(file_path: Path) -> GeometryData:
     
     vertex_explorer = TopExp_Explorer(shape, TopAbs_VERTEX)
     while vertex_explorer.More():
-        vertex = topods_Vertex(vertex_explorer.Current())
+        vertex = topods.Vertex(vertex_explorer.Current())
         pnt = BRep_Tool.Pnt(vertex)
         coord = (pnt.X(), pnt.Y(), pnt.Z())
         
@@ -191,7 +191,7 @@ def _load_step_with_occ(file_path: Path) -> GeometryData:
     edge_explorer = TopExp_Explorer(shape, TopAbs_EDGE)
     
     while edge_explorer.More():
-        edge = topods_Edge(edge_explorer.Current())
+        edge = topods.Edge(edge_explorer.Current())
         
         try:
             # Get edge curve and sample points along it
@@ -229,7 +229,7 @@ def _load_step_with_occ(file_path: Path) -> GeometryData:
     
     # Get bounding box
     bbox = Bnd_Box()
-    brepbndlib_Add(shape, bbox)
+    brepbndlib.Add(shape, bbox)
     xmin, ymin, zmin, xmax, ymax, zmax = bbox.Get()
     
     metadata = {

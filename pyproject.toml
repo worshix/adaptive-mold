@@ -3,19 +3,9 @@ name = "adaptive-mold"
 version = "0.1.0"
 description = "PySide6 GUI for STEP file loading, 3D wireframe visualization, path planning, and serial communication with Arduino controllers"
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
-    "PySide6>=6.6.0",
-    "trimesh[easy]>=4.0.0",
-    "numpy>=1.26.0",
-    "scipy>=1.11.0",
-    "pyserial>=3.5",
-    "sqlalchemy>=2.0.0",
-    "pydantic>=2.5.0",
-    "loguru>=0.7.0",
-    "manifold3d>=2.3.0",
-    "cascadio>=0.0.17",
-]
+requires-python = ">=3.11"
+# Dependencies managed via conda - see environment.yml
+dependencies = []
 
 [project.scripts]
 adaptive-mold = "adaptive_mold.app.__main__:main"
