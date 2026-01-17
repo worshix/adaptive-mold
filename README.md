@@ -1,6 +1,22 @@
 # Adaptive Mold
 
+**Precision Path Mapping System**
+
 A PySide6 desktop application for loading STEP geometry files, visualizing 3D wireframes, computing mapping paths, and sending waypoints to a controller over serial communication.
+
+---
+
+## Project Information
+
+| | |
+|---|---|
+| **Project Title** | Adaptive Mold - Precision Path Mapping System |
+| **Student** | Joseph B Mawodzeka |
+| **Supervisor** | Worship L Mugomeza |
+| **Institution** | Engineering Department |
+| **Year** | 2026 |
+
+---
 
 ## Features
 
@@ -10,6 +26,7 @@ A PySide6 desktop application for loading STEP geometry files, visualizing 3D wi
 - **Serial Communication**: Real serial (pyserial) and mock controller for demo/testing
 - **Job Persistence**: SQLite database storage for jobs, geometry, and waypoints
 - **Mock Mode**: Built-in mock controller for testing without hardware
+- **Welcome Screen**: Professional project information display on startup
 
 ## Requirements
 
@@ -143,12 +160,13 @@ The application uses newline-delimited JSON for communication:
 ```
 adaptive_mold/
 ├── app/
-│   ├── __main__.py        # Entry point
+│   ├── __main__.py        # Entry point with welcome screen
+│   ├── welcome_screen.py  # Project welcome/info screen
 │   ├── main_window.py     # Main GUI window
 │   ├── view3d.py          # 3D wireframe widget
 │   └── ui_helpers.py      # UI utility functions
 ├── core/
-│   ├── step_loader.py     # STEP/mesh file loading
+│   ├── step_loader.py     # STEP/mesh file loading (OCC + trimesh)
 │   ├── path_planner.py    # Waypoint path planning
 │   └── serial_manager.py  # Serial communication
 ├── models/
@@ -159,6 +177,9 @@ adaptive_mold/
 │   └── sample_geometry.json
 └── data/
     └── adaptive_mold.db   # SQLite database (created at runtime)
+
+build.py                   # Build script for creating executables
+environment.yml            # Conda environment specification
 ```
 
 ## 3D View Controls
@@ -182,7 +203,7 @@ adaptive_mold/
 
 ### Run with debug logging:
 ```bash
-uv run python -m adaptive_mold.app
+python -m adaptive_mold.app
 ```
 
 ### Database location:
@@ -192,6 +213,105 @@ adaptive_mold/data/adaptive_mold.db
 
 To reset the database, simply delete this file.
 
+---
+
+## Building Standalone Executables
+
+The project includes a build script to create standalone executables for distribution.
+
+### Prerequisites
+
+Make sure PyInstaller and Pillow are installed:
+```bash
+conda install pyinstaller pillow -c conda-forge
+```
+
+### Build Commands
+
+```bash
+# Basic build (creates a directory with executable)
+python build.py
+
+# Build a single executable file
+python build.py --onefile
+
+# Build with a custom icon
+python build.py --icon /path/to/icon.png
+
+# Clean previous builds first
+python build.py --clean
+
+# Build with console for debugging
+python build.py --console
+
+# Combined: clean and build single file
+python build.py --clean --onefile
+```
+
+### Build Output
+
+After building, find your executable in:
+- **Directory mode**: `dist/AdaptiveMold/AdaptiveMold`
+- **Single file mode**: `dist/AdaptiveMold` (or `dist/AdaptiveMold.exe` on Windows)
+
+### Platform-Specific Notes
+
+| Platform | Icon Format | Executable |
+|----------|-------------|------------|
+| Linux    | `.png`      | `AdaptiveMold` |
+| Windows  | `.ico`      | `AdaptiveMold.exe` |
+| macOS    | `.icns`     | `AdaptiveMold.app` |
+
+### Distributing
+
+To distribute the application:
+
+1. **Directory mode** (recommended for debugging):
+   - Copy the entire `dist/AdaptiveMold/` folder
+   - Users run the executable inside
+
+2. **Single file mode** (simpler distribution):
+   - Copy just the `dist/AdaptiveMold` executable
+   - Slower startup (extracts files to temp directory)
+
+---
+
+## Troubleshooting
+
+### STEP File Loading Issues
+
+If STEP files fail to load:
+1. Ensure pythonocc-core is installed: `conda list | grep pythonocc`
+2. Check the console for error messages
+3. Try exporting the model as STL/OBJ as a fallback
+
+### Serial Connection Issues
+
+**Linux:**
+- Add user to dialout group: `sudo usermod -a -G dialout $USER`
+- Log out and back in for changes to take effect
+
+**Windows:**
+- Check Device Manager for correct COM port
+- Install appropriate USB drivers for your controller
+
+### Application Won't Start
+
+1. Ensure conda environment is activated: `conda activate eng`
+2. Check Python version: `python --version` (should be 3.11.x)
+3. Verify dependencies: `conda list`
+
+---
+
 ## License
 
 [Add your license here]
+
+---
+
+## Acknowledgments
+
+- **pythonocc-core**: OpenCASCADE Python bindings for precise CAD geometry
+- **PySide6**: Qt6 Python bindings for the GUI framework
+- **trimesh**: Mesh processing library (fallback geometry loader)
+- **SQLAlchemy**: Database ORM for job persistence
